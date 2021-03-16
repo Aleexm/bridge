@@ -9,7 +9,9 @@ Installation is simple:
  - Run pip -e install gym-play
  - Run pip install tensorflow==1.5.0 if you want to train another bidding agent.
 
-# Gym Play ♥️
+# Gym Play ◆
+
+# Gym Bridge  ♥️
 
 OpenAI Gym environment for Bridge Bidding, with an integrated Double-Dummy Solver courtesy of Bo Haglund.
 Using the DDS, we can check quickly whether a contract was made.
