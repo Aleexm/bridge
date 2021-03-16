@@ -2,8 +2,8 @@
 
 This github contains an environment for both the bidding (gym-bridge) and playing out the cards (gym-play).
 Installation is simple:
- - Navigate to the desired local directory for the codebase.
- - Enter git clone git@github.com:Aleexm/bridge.git
+ - Navigate to the desired local directory where you wish to place the codebase.
+ - Run git clone git@github.com:Aleexm/bridge.git
  - Enter the created directory
  - Run pip -e install gym-bridge
  - Run pip -e install gym-play
