@@ -9,7 +9,10 @@ Installation is simple:
  - Run pip -e install gym-play
  - Run pip install tensorflow==1.5.0 if you want to train another bidding agent.
 
-# Gym Play ◆
+# Gym Play ♠
+
+## List of features
+- 
 
 # Gym Bridge  ♥️
 
