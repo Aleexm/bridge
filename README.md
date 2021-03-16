@@ -14,15 +14,6 @@ Installation is simple:
 OpenAI Gym environment for Bridge Bidding, with an integrated Double-Dummy Solver courtesy of Bo Haglund.
 Using the DDS, we can check quickly whether a contract was made.
 
-## Environment overview
-Bridge environment for Bridge Bidding. 
-- A hand is encoded as a 52-bitvector of the ordered set of cards, i.e. 2C<2D<...<AH<AS. A '1' indicates this card is held.
-- The vulnerability is encoded as a 2-bitvector. First bit is NS vuln, second bit is EW vuln.
-- The bidding history is encoded as a 318-bitvector, where a 1 in the i-th entry denotes that the i-th bid in the possible maximum bidding sequence is called, i.e. ```p-p-p|1C-p-p-d-p-p-r-p-p|1D-p-p-d-p-p-r-p-p|...|7N-p-p-d-p-p-r-p-p```. The final pass can be inferred. See https://arxiv.org/abs/1903.00900 for details.
-- Observations in this environment are the State, which contains all global information. A Controller then filters the joint observation and passes the correct local information to the acting agent.
-- At each timestep, one of the four agents makes a bid and the state is updated. After three consecutive passes, the bidding phase concludes (4 passes if no contract bid was ever made.).
-- A Double Dummy Solver is used to approximate the tricks made by the declaring partnership.
-
 ## List of Features
 - Is able to wholly handle the bidding.
 - Controller delegates (joint) obervations and action selection to correct sub-agent, masking hidden information.
@@ -33,5 +24,13 @@ Bridge environment for Bridge Bidding.
 - Duplicate bridge format (https://en.wikipedia.org/wiki/Duplicate_bridge) implemented, where a team of 2x2 players sits NS / EW at two tables, receiving equal deals.
 - Scoring: IMP (https://www.bridgewebs.com/barnstaple/Tactics%20at%20Imps.htm) with Duplicate Bridge Format fully works.
 
+## Environment overview
+Bridge environment for Bridge Bidding. 
+- A hand is encoded as a 52-bitvector of the ordered set of cards, i.e. 2C<2D<...<AH<AS. A '1' indicates this card is held.
+- The vulnerability is encoded as a 2-bitvector. First bit is NS vuln, second bit is EW vuln.
+- The bidding history is encoded as a 318-bitvector, where a 1 in the i-th entry denotes that the i-th bid in the possible maximum bidding sequence is called, i.e. ```p-p-p|1C-p-p-d-p-p-r-p-p|1D-p-p-d-p-p-r-p-p|...|7N-p-p-d-p-p-r-p-p```. The final pass can be inferred. See https://arxiv.org/abs/1903.00900 for details.
+- Observations in this environment are the State, which contains all global information. A Controller then filters the joint observation and passes the correct local information to the acting agent.
+- At each timestep, one of the four agents makes a bid and the state is updated. After three consecutive passes, the bidding phase concludes (4 passes if no contract bid was ever made.).
+- A Double Dummy Solver is used to approximate the tricks made by the declaring partnership.
 
 <img src="https://i.imgur.com/DBwuRnX.png" height="600">
