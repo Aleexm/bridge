@@ -1,4 +1,16 @@
-# gym-bridge ♣️
+# Bridge environments ♣️
+
+This github contains an environment for both the bidding (gym-bridge) and playing out the cards (gym-play).
+Installation is simple:
+ - Navigate to the desired local directory for the codebase.
+ - Enter git clone git@github.com:Aleexm/bridge.git
+ - Enter the created directory
+ - Run pip -e install gym-bridge
+ - Run pip -e install gym-play
+ - Run pip install tensorflow==1.5.0 if you want to train another bidding agent.
+
+# Gym Play ♥️
+
 OpenAI Gym environment for Bridge Bidding, with an integrated Double-Dummy Solver courtesy of Bo Haglund.
 Using the DDS, we can check quickly whether a contract was made.
 
