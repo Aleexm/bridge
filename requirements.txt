@@ -2,8 +2,6 @@ cloudpickle==1.6.0
 cycler==0.10.0
 future==0.18.2
 gym==0.18.0
--e git+git@github.com:Aleexm/gym-bridge.git@dad10c349d813c448117a4a1e35f7c577b10fe51#egg=gym_bridge
--e git+git@github.com:Aleexm/gym-play.git@bcc5c3389299e33f8ea081a5440e27851dd704d1#egg=gym_play
 Keras==2.1.3
 kiwisolver==1.3.1
 matplotlib==3.3.4
