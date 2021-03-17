@@ -14,7 +14,7 @@ Installation is simple:
 
 ## List of features
 - PlayEnv can fully simulate the playing of the cards, including tricks taken, scoring, IMP conversion, etc.
-- Has an integrated POMCP solver, which you can play against interactively.
+- Has an integrated POMCP solver, which you can play against interactively. See run_pomcp.py
 
 # Gym Bridge  ♥️
 
