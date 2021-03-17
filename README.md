@@ -5,6 +5,7 @@ Installation is simple:
  - Navigate to the desired local directory where you wish to place the codebase.
  - Run git clone git@github.com:Aleexm/bridge.git
  - Enter the created directory
+ - Run pip install -r requirements.txt
  - Run pip -e install gym-bridge
  - Run pip -e install gym-play
  - Run pip install tensorflow==1.5.0 if you want to train another bidding agent.
