@@ -27,7 +27,7 @@ def random_env():
                   contract=contract)
     return env
 
-def POMCP(env, num_sims, num_particles, c):
+def POMCP(env, agent, num_sims, num_particles, c):
     '''
     Overarching POMCP method. Until game completion, it alternates between
     our moves (POMCP) and opponent's moves.
@@ -50,8 +50,9 @@ def POMCP(env, num_sims, num_particles, c):
     tree = POMCPTree(root=True, name='b')
     cards = ['2','3','4','5','6','7','8','9','T','J','Q','K','A']
     suits = ['C','D','H','S']
+    players = ['N', 'E', 'S', 'W']
     inner_agent = BondAgent(52, 52) # Agent used for simulation in POMCP
-    true_agent = UserAgent(52,52) # Agent that they actually play against (can be same)
+    true_agent = agent # Agent that they actually play against (can be same)
     done = False
     moves = list() # Moves will contain each move that is played since we last
     # updated the POMCP tree. These are used to check for consistency when updating
@@ -80,7 +81,7 @@ def POMCP(env, num_sims, num_particles, c):
             a =  true_agent.act(env.hands, env.state.first_player, env.active_player,
                            env.state, env.declarer)
             moves.append(a)
-        print('MOVEMENT ', env.active_player, ' {}{}'.format(suits[a%4], cards[a//4] ))
+        print('MOVEMENT ', players[env.active_player], ' {}{}'.format(suits[a%4], cards[a//4] ))
         _, _, done, _ = env.step(a)
         # for a, val in tree.va.items():
         #     print(a, val)
@@ -259,12 +260,3 @@ def _get_greedy_action(tree):
             best_v = v
             best_action = k
     return best_action
-
-env = random_env()
-POMCP(env, 1000,100,24)
-for i in range(1000):
-    print('========== {} ============='.format(i))
-    seed = i
-    random.seed(seed)
-    np.random.seed(seed)
-    POMCP()
