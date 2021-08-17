@@ -18,9 +18,10 @@ class POMCPTree:
         self.parent = parent
         self.name = name
         self.children = {}
-        self.n = 1
-        self.na = {}
-        self.va = {}
+        self.n = 1 # Visitation count of entire tree
+        self.na = {} # Visitation count of this action
+        self.va = {} # Value of this action
+        self.ra = {} # AVG tricks taken for this action
         self.root = root
 
     def add_child(self, action_to_child, child):
@@ -31,6 +32,7 @@ class POMCPTree:
         for a in valid_actions:
             self.na[a] = 1 # 1 to avoid annoying division by 0 errors
             self.va[a] = 0
+            self.ra[a] = 0
 
     def child_after_action(self, a, POMCPTree):
         "We move twice, so POMCPTree as child"

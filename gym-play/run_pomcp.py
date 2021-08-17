@@ -8,6 +8,7 @@ import os
 import gym_play.pomcp as pomcp
 import argparse
 import collections
+import sys
 
 '''
 This file runs POMCP on a single deal. This deal can be randomly generated, or
@@ -57,7 +58,7 @@ def parse_pbn(file):
                     return None, None, None, None
             elif "Contract" in line:
                 contract = line[11:13]
-                final_contract = int(contract[0]) * 5 + SUITS[contract[1]]
+                final_contract = (int(contract[0])-1) * 5 + SUITS[contract[1]]
             elif "Result" in line:
                 result = line[9:11]
                 try:
@@ -66,35 +67,38 @@ def parse_pbn(file):
                     res = int(result[0])
         return hands, declarer, final_contract, res
 
-def single_pomcp(agent, num_sims, num_particles, file, c):
+def single_pomcp(agent, num_sims, num_particles, file, print_values, c):
     if file is not None:
         hands, declarer, final_contract, res = parse_pbn(file)
         if declarer is None:
             print("4 passes, no contract established.")
-            return
+            return None, None, None, None
         serialized_hands = serialize_hands(hands)
         env = pomcp.env_from_data(serialized_hands, declarer, final_contract)
     else:
         env = pomcp.random_env()
     suits = ['C', 'D', 'H', 'S', 'N']
     players = ['N', 'E', 'S', 'W']
-    print('Contract: {}{} declared by {}'.format(env.contract.bid//5,
+    print(env.contract.bid)
+    print('Contract: {}{} declared by {}'.format((env.contract.bid+5)//5,
                                                 suits[env.contract.bid%5],
                                                 players[env.declarer]))
-    return pomcp.POMCP(env, agent, num_sims, num_particles, c)
+    return pomcp.POMCP(env, agent, num_sims, num_particles, print_values, c)
 
 parser = argparse.ArgumentParser(description='POMCP params')
 parser.add_argument("--mode", help='mode: interactive / automatic', type=str)
 parser.add_argument("--sims", help="number of simulations for pomcp", type=int)
 parser.add_argument("--particles", help="number of particles for pomcp", type=int)
 parser.add_argument("--file", help="Specific .pbn deal, i.e. deal_1.pbn. This file must be in /data/... Random deal if left empty", type=str)
+parser.add_argument("--show_values", help="Display the values of all cards before choosing the best.", action='store_true')
 args = parser.parse_args()
 if args.mode == "automatic" or args.mode is None:
     agent = BondAgent(52,52)
-elif args.mode == "interactive":
+elif args.mode.lower() == "interactive":
     agent = UserAgent(52,52)
 else:
     print("Incorrect mode submitted: must be interactive or automatic")
+    sys.exit()
 if args.sims is not None:
     sims = args.sims
     assert sims > 0, "Number of simulations must be positive"
@@ -105,6 +109,10 @@ if args.particles is not None:
     assert particles > 0, "Number of particles must be positive"
 else:
     particles = 100
+if args.show_values:
+    print_values = True
+else:
+    print_values = False
 tricks, score, search_time, belief_time  = single_pomcp(agent, sims, particles,
-                                                        args.file, 24)
+                                                        args.file, print_values, 24)
 print('Score (IMP): {} with {} tricks taken'.format(score, tricks))

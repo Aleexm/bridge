@@ -27,7 +27,7 @@ def random_env():
                   contract=contract)
     return env
 
-def POMCP(env, agent, num_sims, num_particles, c):
+def POMCP(env, agent, num_sims, num_particles, print_values, c):
     '''
     Overarching POMCP method. Until game completion, it alternates between
     our moves (POMCP) and opponent's moves.
@@ -35,8 +35,11 @@ def POMCP(env, agent, num_sims, num_particles, c):
     of the constructed search tree at the current gamestate.
 
     args:
+        - env(PlayEnv): The environment which contains the deal + contract.
+        - agent(Agent): The opposition player agent.
         - num_sims(int): Number of POMCP simulations before we take an action.
         - num_particles(int): Number of particles maintained in the belief.
+        - print_values(Bool): Display the values of each action after POMCP.
         - c(int): Tradeoff parameter between exploration and exploitation in
                   UCTS. Advised: 24.
 
@@ -60,6 +63,7 @@ def POMCP(env, agent, num_sims, num_particles, c):
     env_before_moves = deepcopy(env)
     first_time = True
     while not done:
+        # Declaring team plays using POMCP
         if env.active_player % 2 == env.declarer % 2:
             if first_time:
                 pruned_tree = tree
@@ -73,15 +77,15 @@ def POMCP(env, agent, num_sims, num_particles, c):
             env_before_moves = deepcopy(env)
             tree = pruned_tree
             start = time.time()
-            a = search(env, inner_agent, tree, num_sims, c)
+            a = search(env, inner_agent, tree, num_sims, print_values, c)
             search_time += time.time()-start
             moves.append(a)
             first_time = False
-        else:
+        else: # Opposition plays according to the Bridgebond Agent.
             a =  true_agent.act(env.hands, env.state.first_player, env.active_player,
                            env.state, env.declarer)
             moves.append(a)
-        print('MOVEMENT ', players[env.active_player], ' {}{}'.format(suits[a%4], cards[a//4] ))
+        print('{} plays {}{}'.format(players[env.active_player], suits[a%4], cards[a//4] ))
         _, _, done, _ = env.step(a)
         # for a, val in tree.va.items():
         #     print(a, val)
@@ -128,7 +132,7 @@ def prune(pass_env, tree, moves):
     pruned_tree.root = True
     return pruned_tree, env
 
-def search(pass_env, agent, tree, num_sims, c):
+def search(pass_env, agent, tree, num_sims, print_values, c):
     "Enter method for MCTS, call with root"
     print("======SIMULATING {} RUNS======".format(num_sims))
     valid_actions = pass_env.get_valid_actions()
@@ -138,7 +142,7 @@ def search(pass_env, agent, tree, num_sims, c):
         env = deepcopy(pass_env)
         env.hands = tree.belief.sample_deal() # Sample deal from particles
         simulate(env, agent, tree, tree, 0, c) # And perform MCTS simulation
-    return _get_greedy_action(tree)
+    return _get_greedy_action(tree, print_values)
 
 def simulate(env, agent, tree, parent_tree, depth, c):
     '''
@@ -227,6 +231,7 @@ def _update_statistics(tree, a, r):
     tree.n += 1
     tree.na[a] += 1
     tree.va[a] = tree.va[a] + (r-tree.va[a])/tree.na[a]
+    tree.ra[a] += r
 
 def _get_uct_action(tree, c):
     "Implements upper confidence bound action selection"
@@ -252,10 +257,14 @@ def _compute_IMP(env):
     num_score = score(env.contract, env.declarer, [0,0], tricks_taken)
     return IMP_difference(num_score, 0)
 
-def _get_greedy_action(tree):
+def _get_greedy_action(tree, print_scores):
     "Returns best action upon MCTS completion"
     best_v = -sys.maxsize - 1; best_action = -1
     for k,v in tree.va.items():
+        if print_scores:
+                cards = ['2','3','4','5','6','7','8','9','T','J','Q','K','A']
+                suits = ['C','D','H','S']
+                print("Estimated tricks for {}{}: {}".format(suits[k%4], cards[k//4], tree.ra[k]/(tree.na[k])))
         if v > best_v:
             best_v = v
             best_action = k
